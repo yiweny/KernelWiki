@@ -1,6 +1,7 @@
 # Blackwell Kernel Optimization Knowledge Base
 
-> Comprehensive knowledge base for GPU kernel optimization on NVIDIA Blackwell (SM100) and Hopper (SM90).
+> Comprehensive knowledge base for GPU kernel optimization on NVIDIA Blackwell (SM100),
+> Blackwell Ultra / GB300 (SM103), and Hopper (SM90).
 > Optimized for LLM agent retrieval. See [CLAUDE.md](CLAUDE.md) for schema and conventions.
 > **For Claude Code agents**: this repository is a Claude Code skill — see [SKILL.md](SKILL.md).
 
@@ -27,12 +28,13 @@ See [references/examples.md](references/examples.md) for 10 worked query pattern
 
 ## Hardware Features
 
+- [hw-sm103-blackwell-ultra](wiki/hardware/sm103-blackwell-ultra.md) — **SM103 Blackwell Ultra (B300 / GB300)** — NVFP4 peak, schedules, forward-compat
 - [hw-tcgen05-mma](wiki/hardware/tcgen05-mma.md) — Blackwell MMA instruction (replaces wgmma)
 - [hw-tmem](wiki/hardware/tmem.md) — Tensor Memory (256KB dedicated accumulator storage)
 - [hw-clc](wiki/hardware/clc.md) — Cluster Launch Control (dynamic tile scheduling)
 - [hw-tma](wiki/hardware/tma.md) — Tensor Memory Accelerator (async bulk loads)
 - [hw-2sm-cooperative](wiki/hardware/2sm-cooperative.md) — Two-SM cooperative MMA
-- [hw-nvfp4](wiki/hardware/nvfp4.md) — NVFP4 and block-scaled narrow precision
+- [hw-nvfp4](wiki/hardware/nvfp4.md) — NVFP4 and block-scaled narrow precision (SM100 + SM103)
 - [hw-pdl-gdc](wiki/hardware/pdl-gdc.md) — Programmatic Dependent Launch / Grid Dependency Control
 
 ## Optimization Techniques
@@ -77,6 +79,7 @@ See [references/examples.md](references/examples.md) for 10 worked query pattern
 
 ## Migration Guides
 
+- [migration-sm100-to-sm103](wiki/migration/sm100-to-sm103.md) — **B200 (SM100) → B300/GB300 (SM103)** kernel porting checklist
 - [migration-wgmma-to-tcgen05](wiki/migration/wgmma-to-tcgen05.md) — Hopper wgmma → Blackwell tcgen05
 - [migration-register-to-tmem](wiki/migration/register-to-tmem.md) — Register accumulators → TMEM
 

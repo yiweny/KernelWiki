@@ -2,17 +2,17 @@
 id: hw-nvfp4
 title: "NVFP4 and Block-Scaled Narrow Precision"
 type: hardware
-architectures: [sm100, sm100a]
+architectures: [sm100, sm100a, sm103, sm103a]
 tags: [nvfp4, fp4, block-scale, fp8, fp6]
 confidence: source-reported
-related: [technique-fine-grained-quantization, kernel-nvfp4-gemm, kernel-nvfp4-gemv, hw-tcgen05-mma]
-sources: [doc-nvidia-tuning-guide, contest-gpumode-p1, contest-gpumode-p2, blog-yue-nvfp4]
+related: [technique-fine-grained-quantization, kernel-nvfp4-gemm, kernel-nvfp4-gemv, hw-tcgen05-mma, hw-sm103-blackwell-ultra]
+sources: [doc-nvidia-tuning-guide, contest-gpumode-p1, contest-gpumode-p2, blog-yue-nvfp4, doc-blackwell-ultra-sm103, pr-flashinfer-2303, pr-flashinfer-4063]
 aliases: [NVFP4, E2M1, "FP4 E2M1", "nv_float4"]
 ---
 
 ## Overview
 
-NVFP4 is NVIDIA's 4-bit floating-point format (E2M1) with block scaling, native to Blackwell tensor cores.
+NVFP4 is NVIDIA's 4-bit floating-point format (E2M1) with block scaling, native to Blackwell tensor cores (SM100 and SM103 / Blackwell Ultra).
 
 ## Format Details
 
@@ -53,7 +53,19 @@ mov.b32 {tmp0, tmp1, tmp2, tmp3}, packed_data;
 | Scale precision | Non-power-of-2 | Power-of-2 only |
 | Quantization error | Lower | Higher |
 
+## SM103 / GB300 Notes
+
+Blackwell Ultra raises dense NVFP4 peak (~15 PFLOPS, ~1.5× B200) and the **spec NVFP4/BF16 ratio (~6× vs ~4× on B200)**. Realizing that requires:
+
+- SM103-specific CUTLASS tile/cluster/schedulers (keep SM100 configs; autotune) — `pr-flashinfer-2303`
+- Native larger-K mainloops (e.g. CTA_K=768) + **256-bit epilogue stores** + `mul.f32x2` scale fusion — `pr-flashinfer-4063` (~1.12–1.16× on B300)
+- Backend heuristic flip: CUTLASS often beats cuDNN for FP4 GEMM on SM103 — `pr-flashinfer-2404`
+- Dedicated scale-factor TMA warp on Ultra blockscaled / grouped GEMM — `pr-cutlass-3124`
+
+See [hw-sm103-blackwell-ultra](sm103-blackwell-ultra.md) and [migration-sm100-to-sm103](../migration/sm100-to-sm103.md).
+
 ## Related
 - [fine-grained-quantization](../techniques/fine-grained-quantization.md) — Scaling strategies
 - [nvfp4-gemm](../kernels/nvfp4-gemm.md) — NVFP4 GEMM kernel
 - [nvfp4-gemv](../kernels/nvfp4-gemv.md) — NVFP4 GEMV kernel
+- [sm103-blackwell-ultra](sm103-blackwell-ultra.md) — B300/GB300 architecture

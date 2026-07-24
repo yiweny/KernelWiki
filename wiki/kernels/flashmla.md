@@ -4,6 +4,7 @@ title: FlashMLA — Multi-head Latent Attention
 type: kernel
 architectures:
 - sm100
+- sm103
 - sm90
 tags:
 - mla
@@ -22,14 +23,18 @@ kernel_types:
 - sparse-attention
 languages:
 - cuda-cpp
+- cute-dsl
 related:
 - hw-tcgen05-mma
 - hw-tmem
+- hw-sm103-blackwell-ultra
 - kernel-nsa
 sources:
 - blog-flashmla
 - pr-flashinfer-1117
 - pr-vllm-39752
+- pr-flashinfer-3888
+- pr-sglang-17600
 performance_claims:
 - gpu: B200
   dtype: bf16
@@ -46,7 +51,8 @@ performance_claims:
   utilization: ~65%
   source_id: blog-flashmla
 blackwell_relevance: SM100 dense prefill achieves 1460 TFLOPS (vs 660 on SM90); Blackwell
-  tcgen05 enables higher MLA throughput.
+  tcgen05 enables higher MLA throughput. SM103 (B300/GB300) needs cute-dsl MLA enabled
+  in backend tables and cluster-aware split-KV for 2-SM kernels.
 artifact_dir: artifacts/kernels/flashmla
 ---
 
@@ -234,3 +240,10 @@ Query via:
 ```bash
 python3 scripts/get_page.py kernel-flashmla --include-code
 ```
+
+## SM103 / GB300 Notes
+
+- SGLang/FlashMLA paths were extended for CUDA 13 + B300 (`pr-sglang-17600`).
+- FlashInfer MLA on B300: include **`cute-dsl` and `auto`** in the CC 10.3 backend table — cute-dsl is often the fastest decode backend and was previously skipped by accident (`pr-flashinfer-3888`).
+- For 2-SM CUTLASS MLA, budget split-KV by **cluster slots** (`sm_count / (batch * cluster_ctas)`), not raw SM count — over-splitting wastes LSE reduction waves.
+- See [hw-sm103-blackwell-ultra](../hardware/sm103-blackwell-ultra.md).

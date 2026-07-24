@@ -1,5 +1,5 @@
 repo: NVIDIA/TensorRT-LLM
-searched_at: '2026-05-20'
+searched_at: '2026-07-23'
 keywords_used:
 - blackwell
 - sm100
@@ -11,6 +11,11 @@ keywords_used:
 - cutlass
 - dsa
 - tma
+- sm103
+- sm_103
+- GB300
+- B300
+- blackwell_ultra
 total_candidates: 236
 included: 152
 excluded: 22

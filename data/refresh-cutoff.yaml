@@ -3,4 +3,4 @@
 ##
 ## All candidates/*.yaml::searched_at fields must equal this date
 ## after a refresh round (per AC-5).
-cutoff_date: '2026-05-20'
+cutoff_date: '2026-07-23'

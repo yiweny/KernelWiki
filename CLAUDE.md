@@ -1,6 +1,6 @@
 # Blackwell Kernel Optimization Knowledge Base — Schema
 
-A structured knowledge base of GPU kernel optimization for NVIDIA Blackwell (SM100) and Hopper (SM90), optimized for LLM agent retrieval.
+A structured knowledge base of GPU kernel optimization for NVIDIA Blackwell (SM100), Blackwell Ultra / GB300 (SM103), and Hopper (SM90), optimized for LLM agent retrieval.
 
 ## Navigation
 
@@ -69,7 +69,8 @@ Alias mappings in `data/aliases.yaml` map canonical terms to known synonyms:
 - `tcgen05` = UMMA = tensor_core_gen05
 - `tmem` = tensor-memory = TMEM
 - `clc` = Cluster Launch Control = CLC
-- `sm100` = Blackwell = B200
+- `sm100` = Blackwell = B200 = GB200
+- `sm103` = Blackwell Ultra = B300 = GB300
 - `sm90` = Hopper = H100
 
 ## Confidence Rules
@@ -111,7 +112,7 @@ performance_claims:
 
 ## Scope Rules
 
-- **Blackwell-first**: SM100 content is primary. SM90 only with explicit `blackwell_relevance`.
+- **Blackwell-first**: SM100/SM103 content is primary. SM90 only with explicit `blackwell_relevance`.
 - **Kernel-only**: No distributed system topics (DeepEP, DualPipe, EPLB excluded).
 - **English canonical**: All content in English.
 - **First-class DSLs**: CuTe DSL, CUDA C++, PTX, Triton. Others mentioned but no dedicated pages.

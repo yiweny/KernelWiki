@@ -11,16 +11,17 @@ All page IDs below resolve via `get_page.py <id>`. All paths are relative to the
 
 ---
 
-## Hardware Features (SM100)
+## Hardware Features (SM100 / SM103)
 
 | Feature | Page ID | Path | Notes |
 |---|---|---|---|
+| **SM103 Blackwell Ultra (B300/GB300)** | `hw-sm103-blackwell-ultra` | `wiki/hardware/sm103-blackwell-ultra.md` | CC 10.3; ~1.5× NVFP4 peak vs B200; SM103 schedules, Store256 epilogues, forward-compat traps. |
 | tcgen05 MMA instruction | `hw-tcgen05-mma` | `wiki/hardware/tcgen05-mma.md` | Blackwell tensor core instruction; replaces wgmma. CTA-scope (`cta_group::1`) or cluster-scope (`cta_group::2`). |
 | Tensor Memory (TMEM) | `hw-tmem` | `wiki/hardware/tmem.md` | 256 KB/SM dedicated accumulator storage; 128 rows × 512 cols (32-bit); allocated via `tcgen05.alloc`. |
 | Cluster Launch Control (CLC) | `hw-clc` | `wiki/hardware/clc.md` | Hardware work queue for persistent kernels; `clusterlaunchcontrol.try_cancel` for speculative workloads. |
 | Tensor Memory Accelerator (TMA) | `hw-tma` | `wiki/hardware/tma.md` | Async bulk load/store (`cp.async.bulk.tensor`), multicast across cluster. |
 | 2-SM Cooperative MMA | `hw-2sm-cooperative` | `wiki/hardware/2sm-cooperative.md` | `cta_group::2` — two CTAs in one cluster cooperate on a single MMA. |
-| NVFP4 / block-scaled FP | `hw-nvfp4` | `wiki/hardware/nvfp4.md` | E2M1 data + FP8 (UE8M0) block scale per 16 elements. |
+| NVFP4 / block-scaled FP | `hw-nvfp4` | `wiki/hardware/nvfp4.md` | E2M1 data + FP8 (UE8M0) block scale per 16 elements. SM100 + SM103. |
 | PDL / GDC | `hw-pdl-gdc` | `wiki/hardware/pdl-gdc.md` | Programmatic Dependent Launch and Grid Dependency Control — overlap successive kernel launches. |
 | mbarrier primitives | `hw-mbarrier` | `wiki/hardware/mbarrier.md` | Shared-memory barriers with phase tracking; the glue between TMA/tcgen05/warps. |
 
@@ -92,12 +93,13 @@ All page IDs below resolve via `get_page.py <id>`. All paths are relative to the
 
 ---
 
-## Migration (Hopper → Blackwell)
+## Migration (Hopper → Blackwell → Ultra)
 
 | Page ID | Notes |
 |---|---|
 | `migration-wgmma-to-tcgen05` | wgmma (Hopper) → tcgen05 (Blackwell); CTA-scope vs cluster-scope MMA; descriptor changes. |
 | `migration-register-to-tmem` | Register accumulator (Hopper) → TMEM (Blackwell); epilogue restructuring required. |
+| `migration-sm100-to-sm103` | B200 (SM100) → B300/GB300 (SM103): schedules, feature guards, backend heuristics, TRTLLM hang gates. |
 
 ---
 
@@ -105,10 +107,10 @@ All page IDs below resolve via `get_page.py <id>`. All paths are relative to the
 
 | Repo | PR pages | Ledger |
 |---|---|---|
-| NVIDIA/cutlass | 44 | `candidates/cutlass.yaml` |
+| NVIDIA/cutlass | 45 | `candidates/cutlass.yaml` |
 | sgl-project/sglang | 730 | `candidates/sglang.yaml` |
 | vllm-project/vllm | 921 | `candidates/vllm.yaml` |
-| flashinfer-ai/flashinfer | 623 | `candidates/flashinfer.yaml` |
+| flashinfer-ai/flashinfer | 625 | `candidates/flashinfer.yaml` |
 | pytorch/pytorch | 85 | `candidates/pytorch.yaml` |
 | deepseek-ai/DeepGEMM | 10 | `candidates/deepgemm.yaml` |
 | NVIDIA/cccl | 66 | `candidates/cccl-cub.yaml` |
@@ -144,7 +146,8 @@ When the user types one of these, match to the canonical term shown:
 | 2-SM cooperative, two-SM cooperative, 2CTA, cta_group::2 | `2sm-cooperative` |
 | NVFP4, nv_float4, E2M1, FP4 E2M1 | `nvfp4` |
 | block scaling, UE8M0, microscaling, MX | `block-scale` |
-| Blackwell, B200, B100, GB200, GB300, SM100 | `sm100` |
+| Blackwell, B200, B100, GB200, SM100 | `sm100` |
+| Blackwell Ultra, B300, GB300, SM103, sm_103a | `sm103` |
 | Hopper, H100, H200, H800, SM90 | `sm90` |
 | MoE, mixture of experts, expert parallelism | `moe` |
 | MLA, multi-head latent attention | `mla` |

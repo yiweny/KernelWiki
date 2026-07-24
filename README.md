@@ -7,9 +7,13 @@
 > For bug reports, feature requests, and discussions, please use the main KDA repository:
 > https://github.com/mit-han-lab/kernel-design-agents
 
-> **Last repository update: 2026-06-09.** Information after this date is not included in KernelWiki yet.
+> **Last repository update: 2026-07-23.** Information after this date is not included in KernelWiki yet.
+>
+> **GB300 / SM103 coverage:** first-class architecture tags (`sm103` / `sm103a`), hardware page
+> [`wiki/hardware/sm103-blackwell-ultra.md`](wiki/hardware/sm103-blackwell-ultra.md), and migration guide
+> [`wiki/migration/sm100-to-sm103.md`](wiki/migration/sm100-to-sm103.md).
 
-A structured knowledge base of NVIDIA Blackwell (SM100, B200) and Hopper (SM90, H100) GPU kernel optimization, packaged as a Claude Code skill. The repository root **is** the skill directory — clone it directly into `~/.claude/skills/` and it works out of the box.
+A structured knowledge base of NVIDIA Blackwell (SM100, B200), Blackwell Ultra (SM103, B300/GB300), and Hopper (SM90, H100) GPU kernel optimization, packaged as a Claude Code skill. The repository root **is** the skill directory — clone it directly into `~/.claude/skills/` and it works out of the box.
 
 ## Install as a Claude Code Skill
 

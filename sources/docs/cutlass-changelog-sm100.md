@@ -3,16 +3,46 @@ id: doc-cutlass-changelog-sm100
 title: "CUTLASS Changelog: SM100/Blackwell Entries"
 url: https://docs.nvidia.com/cutlass/latest/CHANGELOG.html
 source_category: official-doc
-architectures: [sm100, sm100a]
+architectures: [sm100, sm100a, sm103, sm103a]
 tags: [tcgen05, tmem, tma, clc, nvfp4, fp4, fp6, fp8, block-scale, warp-specialization, persistent-kernel, gemm, grouped-gemm, attention, moe, mla, 2sm-cooperative, tile-scheduling, cute-dsl, epilogue-fusion, sparse-attention]
-retrieved_at: 2026-04-17
+retrieved_at: 2026-07-23
 ---
 
-# CUTLASS Changelog: SM100/Blackwell Entries
+# CUTLASS Changelog: SM100/SM103 Blackwell Entries
 
 ## Overview
 
-Comprehensive listing of all SM100 (Blackwell) related entries from the CUTLASS changelog, spanning from CUTLASS 3.8.0 (January 2025, first Blackwell support) through CUTLASS 4.5.0 (March 2026). The changelog tracks the rapid evolution of Blackwell kernel support including dense/sparse GEMM, blockscaled formats (NVFP4, MXFP4, MXFP6, MXFP8), MoE kernels, attention kernels, CuTe DSL, and the Cluster Launch Control scheduling system.
+Comprehensive listing of SM100 (Blackwell) and SM103 (Blackwell Ultra / B300 / GB300) related entries from the CUTLASS changelog, spanning from CUTLASS 3.8.0 (January 2025, first Blackwell support) through CUTLASS 4.6.1 (July 2026). Tracks dense/sparse GEMM, blockscaled formats (NVFP4, MXFP4, MXFP6, MXFP8), MoE kernels, attention kernels, CuTe DSL, and Cluster Launch Control — including SM103 Ultra blockscaled and grouped kernels.
+
+## CUTLASS 4.6.1 (2026-07-15)
+
+- CuTe DSL bug fixes (Thor 12.9 wheel, FA2 Ampere regression, Jax FFI registration)
+- Stability release on top of 4.6.0
+
+## CUTLASS 4.6.0 (2026-07-13)
+
+- CuTe DSL: experimental `cute.compile_to` fine-grained compilation API; IKET in-kernel event tracing profiler; distributed compiler binaries
+- Launch attributes: launch completion events + programmatic events (PDL)
+- Auto shared-memory carveout / size deduction; SASS dump without full CUDA toolkit
+- **CUTLASS Operator API** (`nvidia-cutlass-operators`) for discovering/integrating DSL kernels
+- SM120/SM121 ptr-array TMA collective for tensor/token-scaled FP8 grouped GEMM
+- Optimal code generation with CUDA toolkit 13.3
+- Note: SM103 grouped blockscaled CuTeDSL kernel landed via upstream PR #3124 (2026-07-14) on the post-4.5 tree
+
+## CUTLASS 4.5.3 (2026-07-08)
+
+- Fixed CuTe DSL compilation-time regression introduced in 4.5.0
+
+## CUTLASS 4.5.2 (2026-06-16)
+
+- Python 3.14t support (GIL enabled)
+- FP4 EVT convert fix; profiler avoids invalid 2-SM TMA instantiations
+
+## CUTLASS 4.5.1 (2026-05-27)
+
+- SM100 F8F6F4 SS MMA trait fixes; UE8M0 tensor fill; `cvt.rn.bf16x2.e4m3x2`
+- Example 93: paged KV cache for Blackwell low-latency GQA
+- SM120 blockscaled MMA op completeness
 
 ## CUTLASS 4.5.0 (2026-03-27)
 
@@ -147,3 +177,5 @@ Comprehensive listing of all SM100 (Blackwell) related entries from the CUTLASS 
 - **Nov 2025** (4.3.0): MoE API, stream-K convolution, 84% SOL tutorial
 - **Feb 2026** (4.4.0): GB300, AoT compilation, cute.experimental, epilogue fusion
 - **Mar 2026** (4.5.0): Green context, L2 fixes, CUDA 13.2 optimization
+- **May–Jul 2026** (4.5.1–4.5.3): GQA paged KV, FP4 EVT fixes, compile-time regression fix
+- **Jul 2026** (4.6.0/4.6.1): Operator API, IKET profiler, SM120 grouped FP8; SM103 grouped blockscaled CuTeDSL (PR #3124)

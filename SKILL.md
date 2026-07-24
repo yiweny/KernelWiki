@@ -1,24 +1,26 @@
 ---
 name: KernelWiki
-description: Use when the user asks about optimizing NVIDIA Blackwell (SM100, B200) or Hopper (SM90, H100) GPU kernels — tcgen05/TMEM/CLC/NVFP4/2-SM cooperative, warp specialization, FlashAttention-4, DeepGEMM, FlashMLA, MoE, grouped GEMM, CuTe-DSL/PTX/Triton on Blackwell, or wants concrete PR references from CUTLASS/SGLang/vLLM/FlashInfer/PyTorch. Do NOT use for generic CUDA Q&A that is not Blackwell/Hopper-specific, host-side framework integration, or distributed systems (DeepEP/EPLB/DualPipe).
+description: Use when the user asks about optimizing NVIDIA Blackwell (SM100, B200), Blackwell Ultra (SM103, B300/GB300), or Hopper (SM90, H100) GPU kernels — tcgen05/TMEM/CLC/NVFP4/2-SM cooperative, SM103 schedules, warp specialization, FlashAttention-4, DeepGEMM, FlashMLA, MoE, grouped GEMM, CuTe-DSL/PTX/Triton on Blackwell, or wants concrete PR references from CUTLASS/SGLang/vLLM/FlashInfer/PyTorch. Do NOT use for generic CUDA Q&A that is not Blackwell/Hopper-specific, host-side framework integration, or distributed systems (DeepEP/EPLB/DualPipe).
 argument-hint: "[natural-language-question] | [--tag foo --type kernel] | [page-id]"
 allowed-tools: "Bash Read Grep Glob"
 ---
 
 # KernelWiki — Blackwell & Hopper Kernel Optimization Wiki
 
-Query a structured, cross-referenced knowledge base of GPU kernel optimization for NVIDIA Blackwell (SM100) and Hopper (SM90). The repository update date is recorded in `README.md`; run `python3 scripts/repo_status.py` for current corpus counts.
+Query a structured, cross-referenced knowledge base of GPU kernel optimization for NVIDIA Blackwell (SM100), Blackwell Ultra / GB300 (SM103), and Hopper (SM90). The repository update date is recorded in `README.md`; run `python3 scripts/repo_status.py` for current corpus counts.
 
 ## When To Use This Skill
 
 Trigger this skill when the user asks about:
 
 - **Blackwell/SM100 kernel programming** — tcgen05.mma, TMEM, CLC, 2-SM cooperative, NVFP4, FP8/FP4 block scaling, PDL/GDC
+- **Blackwell Ultra / GB300 (SM103)** — B300 vs B200 deltas, SM103 NVFP4 schedules, Store256 epilogues, TRTLLM attention hangs, cute-dsl MLA on 10.3
 - **Kernel implementations** — FlashAttention-4, DeepGEMM, FlashMLA, NSA, GatedDeltaNet, NVFP4 GEMM/GEMV, fused MoE, gated dual GEMM
 - **Performance patterns** — low SM utilization, memory-bound, register pressure, compute-bound, tail effects, pipeline stalls
 - **DSLs for Blackwell** — CuTe DSL, CUDA C++ with PTX inline, Triton on Blackwell
 - **Hopper → Blackwell migration** — wgmma → tcgen05, register → TMEM accumulators
-- **PR references** — "how did vLLM/SGLang/FlashInfer/CUTLASS/PyTorch implement X for SM100?"
+- **SM100 → SM103 migration** — feature guards, schedules, backend heuristics, forward-compat
+- **PR references** — "how did vLLM/SGLang/FlashInfer/CUTLASS/PyTorch implement X for SM100/SM103?"
 - **Competition solutions** — GPU Mode NVFP4 hackathon, FlashInfer MLSys 2026 submissions
 
 Do NOT use this skill for:

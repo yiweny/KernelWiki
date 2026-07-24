@@ -66,8 +66,21 @@ sm100:
   - B200
   - B100
   - GB200
-  - GB300
   - "SM100"
+  - "SM 100"
+  - "CC 10.0"
+
+sm103:
+  - "Blackwell Ultra"
+  - "blackwell ultra"
+  - B300
+  - GB300
+  - "SM103"
+  - "SM 103"
+  - "SM103a"
+  - "sm_103"
+  - "sm_103a"
+  - "CC 10.3"
 
 sm90:
   - Hopper

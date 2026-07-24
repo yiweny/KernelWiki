@@ -6,6 +6,8 @@ architectures:
 - sm100
 - sm100a
 - sm90
+- sm103
+- sm103a
 tags:
 - moe
 - fused-kernel
@@ -27,12 +29,15 @@ languages:
 - cute-dsl
 - triton
 related:
+- hw-sm103-blackwell-ultra
 - kernel-grouped-gemm
 - kernel-deepgemm
 - technique-fine-grained-quantization
 - technique-tile-scheduling
 sources:
 - contest-flashinfer-track-a
+- pr-flashinfer-2149
+- pr-cutlass-3124
 - blog-deepgemm
 - pr-vllm-23696
 performance_claims:
@@ -284,3 +289,9 @@ Query via:
 ```bash
 python3 scripts/get_page.py kernel-fused-moe --include-code
 ```
+
+## SM103 / GB300 Notes
+
+- FlashInfer enabled the **SM103 MoE DSL backend** (`pr-flashinfer-2149`, requires `nvidia-cutlass-dsl>=4.3.1`).
+- CUTLASS CuTeDSL ships an **SM103 grouped block-scaled GEMM** with a dedicated scale-factor TMA warp — the building block for multi-expert NVFP4 MoE on GB300 (`pr-cutlass-3124`).
+- Prefer arch-specific autotune; do not assume SM100 MoE tile winners transfer.

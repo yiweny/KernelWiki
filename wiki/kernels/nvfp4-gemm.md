@@ -5,6 +5,8 @@ type: kernel
 architectures:
 - sm100
 - sm100a
+- sm103
+- sm103a
 tags:
 - gemm
 - nvfp4
@@ -25,12 +27,18 @@ related:
 - hw-nvfp4
 - hw-tcgen05-mma
 - hw-tmem
+- hw-sm103-blackwell-ultra
 - kernel-nvfp4-gemv
 - technique-warp-specialization
+- migration-sm100-to-sm103
 sources:
 - contest-gpumode-p2
 - doc-cutlass-blackwell
 - pr-cutlass-2139
+- pr-flashinfer-2303
+- pr-flashinfer-4063
+- pr-flashinfer-2404
+- pr-cutlass-3124
 performance_claims:
 - gpu: B200
   dtype: nvfp4
@@ -39,6 +47,20 @@ performance_claims:
   value: 10.807
   utilization: near cuBLAS
   source_id: contest-gpumode-p2
+- gpu: B300
+  dtype: nvfp4
+  shape: "Llama-3.1-70B-like N=8192 K=28672 batch=4096"
+  metric: TFLOPS
+  value: 6898.88
+  utilization: SM103 schedules vs prior SM100 configs
+  source_id: pr-flashinfer-2303
+- gpu: B300
+  dtype: nvfp4
+  shape: "14 production MNK shapes, native CTA_K=768"
+  metric: speedup
+  value: 1.16
+  utilization: Store256 + mul.f32x2 epilogue geomean (same tactic)
+  source_id: pr-flashinfer-4063
 artifact_dir: artifacts/kernels/nvfp4-gemm
 ---
 
@@ -49,6 +71,8 @@ artifact_dir: artifacts/kernels/nvfp4-gemm
 NVFP4 GEMM is a compute-bound matrix multiplication kernel operating on NVIDIA's native 4-bit floating-point format (E2M1) with block scaling on Blackwell GPUs. Unlike the memory-bound GEMV, GEMM is dominated by tensor core throughput and benefits from Blackwell's native FP4 MMA instructions via tcgen05.mma, TMA bulk loads, TMEM accumulation, and warp specialization.
 
 This kernel was Problem 2 of the GPU Mode NVFP4 Hackathon (Nov-Dec 2025), targeting B200 GPUs. Top entries achieved within 1% of cuBLAS performance using CUTLASS SM100 schedules.
+
+On **SM103 (B300/GB300)**, NVFP4 is even more central: Ultra peak is ~1.5× B200 dense NVFP4 with a higher NVFP4/BF16 ratio (~6× vs ~4×). Production stacks keep SM100 schedules and add SM103-specific tile/cluster/scheduler specializations, then autotune per shape.
 
 ## NVFP4 Data Format
 
@@ -67,6 +91,26 @@ Key difference from MXFP4:
   - E4M3 block scale (non-power-of-two) vs UE8M0 (power-of-two only)
   - Block size 16 (tighter) vs 32 (coarser)
 ```
+
+## SM103 / GB300 Specialization
+
+| Concern | SM100 practice | SM103 practice |
+|---|---|---|
+| Schedules | SM100 tile/cluster set | **Add** SM103 templates; do not delete SM100; autotune |
+| Mainloop K | Often K=128/256 class tiles | Native paths with larger K (e.g. **CTA_K=768**) |
+| Epilogue | 128-bit class stores common | **256-bit STG** + paired `mul.f32x2` scale (~1.12–1.16×) |
+| Backend | cuDNN often wins on B200 | **CUTLASS preferred** on B300 for FP4 GEMM |
+| Grouped/MoE | SM100 grouped blockscaled | SM103 dense Ultra mainloop + grouped scheduler + **scale TMA warp** |
+
+FlashInfer SM103 scheduler uplift (Llama-3.1-70B-like, N=8192, K=28672), NVFP4 TFLOP/s:
+
+| Batch | Before (SM100 configs) | After (+SM103 schedules) |
+|---:|---:|---:|
+| 1024 | 5659.8 | 6341.0 |
+| 4096 | 6160.8 | 6898.9 |
+| 8192 | 5939.2 | 6653.9 |
+
+Sources: `pr-flashinfer-2303`, `pr-flashinfer-4063`, `pr-flashinfer-2404`, `pr-cutlass-3124`. Full porting checklist: [migration-sm100-to-sm103](../migration/sm100-to-sm103.md).
 
 ## CUTLASS SM100 Schedule
 

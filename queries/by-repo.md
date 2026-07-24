@@ -275,10 +275,11 @@
 
 <a id="nvidiacutlass"></a>
 ## NVIDIA/cutlass
-44 PRs
+45 PRs
 
 | PR | Title | Date | Techniques | Tags |
 |-----|-------|------|------------|------|
+| [#3124](../sources/prs/cutlass/PR-3124.md) | [CuTeDSL] Add SM103 grouped block-scaled GEMM kernel and tests | 2026-07-14 | warp-specialization, persistent-kernel, tile-scheduling | nvfp4, fp4, block-scale |
 | [#3184](../sources/prs/cutlass/PR-3184.md) | Add Snake activation functor for EVT | 2026-04-24 | epilogue-fusion | epilogue-fusion |
 | [#3176](../sources/prs/cutlass/PR-3176.md) | Small Tile N BlockScaled GEMM + Grouped GEMM on SM12x | 2026-04-19 | kernel-fusion | gemm, kernel-fusion, tma |
 | [#3130](../sources/prs/cutlass/PR-3130.md) | Update blackwell tutorial to be compatible with 4.5-dev version | 2026-03-25 | persistent-kernel | gemm, persistent-kernel |
@@ -343,10 +344,12 @@
 
 <a id="flashinfer-aiflashinfer"></a>
 ## flashinfer-ai/flashinfer
-623 PRs
+625 PRs
 
 | PR | Title | Date | Techniques | Tags |
 |-----|-------|------|------------|------|
+| [#4063](../sources/prs/flashinfer/PR-4063.md) | perf(sm103): optimize NVFP4 epilogue stores and scaling | 2026-07-23 | epilogue-fusion, vectorized-loads | nvfp4, fp4, gemm |
+| [#3888](../sources/prs/flashinfer/PR-3888.md) | fix(mla): enable cute-dsl/auto on SM103 + cluster-aware cutlass split_kv | 2026-07-09 | tile-scheduling | mla, attention, decode |
 | [#3317](../sources/prs/flashinfer/PR-3317.md) | Update trtllm FMHA cubins | 2026-05-14 |  | flash-attention |
 | [#3322](../sources/prs/flashinfer/PR-3322.md) | [feat] Add gemma RMS AR fusion | 2026-05-14 | kernel-fusion | gemm, kernel-fusion, moe |
 | [#3324](../sources/prs/flashinfer/PR-3324.md) | checkpointing_ssu kernel: fused replay + conditional state-write for Mamba2 | 2026-05-14 | kernel-fusion | kernel-fusion |

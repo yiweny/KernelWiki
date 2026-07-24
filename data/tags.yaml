@@ -5,6 +5,8 @@
 architectures:
   - sm100
   - sm100a
+  - sm103
+  - sm103a
   - sm90
   - sm90a
   - sm120

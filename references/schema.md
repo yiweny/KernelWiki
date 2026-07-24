@@ -102,7 +102,7 @@ For `wiki-technique`, `wiki-kernel`, `wiki-language`, must be ≥ `snippet`.
 
 All values in these fields must appear in `data/tags.yaml`:
 
-- **architectures**: sm100, sm100a, sm90, sm90a, sm120
+- **architectures**: sm100, sm100a, sm103, sm103a, sm90, sm90a, sm120
 - **hardware_features**: tcgen05, tmem, tma, clc, 2sm-cooperative, pdl, gdc, nvfp4, fp8, fp6, fp4, block-scale, wgmma, cluster, mbarrier
 - **techniques**: warp-specialization, persistent-kernel, swizzling, pipeline-stages, double-buffering, register-reuse, epilogue-fusion, tile-scheduling, tma-multicast, software-exp, fine-grained-quantization, cuda-core-promotion, jit-compilation, vectorized-loads, cache-policy, kernel-fusion, chunk-parallelism, loop-unrolling, register-budgeting, shared-memory-optimization, ping-pong-scheduling, conditional-rescaling, data-reuse, per-k-specialization
 - **kernel_types**: gemm, attention, moe, sparse-attention, gemv, grouped-gemm, gated-delta-net, fused-kernel, decode, prefill, quantization, flash-attention, mla, linear-attention, gated-dual-gemm, batched-gemv
@@ -115,7 +115,8 @@ When asking about:
 - UMMA → canonical tag is `tcgen05`
 - Tensor Memory / TMEM → `tmem`
 - Cluster Launch Control / CLC → `clc`
-- Blackwell / B200 → architecture `sm100`
+- Blackwell / B200 / GB200 → architecture `sm100`
+- Blackwell Ultra / B300 / GB300 → architecture `sm103`
 - Hopper / H100 → architecture `sm90`
 - MoE / Mixture of Experts → `moe`
 - MLA / Multi-head Latent Attention → `mla`
