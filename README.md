@@ -13,31 +13,105 @@
 > [`wiki/hardware/sm103-blackwell-ultra.md`](wiki/hardware/sm103-blackwell-ultra.md), and migration guide
 > [`wiki/migration/sm100-to-sm103.md`](wiki/migration/sm100-to-sm103.md).
 
-A structured knowledge base of NVIDIA Blackwell (SM100, B200), Blackwell Ultra (SM103, B300/GB300), and Hopper (SM90, H100) GPU kernel optimization, packaged as a Claude Code skill. The repository root **is** the skill directory — clone it directly into `~/.claude/skills/` and it works out of the box.
+A structured knowledge base of NVIDIA Blackwell (SM100, B200), Blackwell Ultra (SM103, B300/GB300), and Hopper (SM90, H100) GPU kernel optimization, packaged as an agent skill. The repository root **is** the skill directory (`SKILL.md` at the clone root) — clone it into the skill path for your agent and it works out of the box.
 
-## Install as a Claude Code Skill
+This tree includes **SM103 / GB300 (Blackwell Ultra)** coverage (hardware page, SM100→SM103 migration, NVFP4 schedules, and related sources). Upstream mirror: [mit-han-lab/KernelWiki](https://github.com/mit-han-lab/KernelWiki).
+
+## Install as a Skill
+
+Pick one (or both) install locations. Query scripts live next to `SKILL.md` and auto-resolve the wiki root — **no environment variable required**.
+
+### Claude Code
 
 ```bash
-git clone git@github.com:mit-han-lab/KernelWiki.git ~/.claude/skills/KernelWiki
+git clone https://github.com/yiweny/KernelWiki.git ~/.claude/skills/KernelWiki
 pip install -r ~/.claude/skills/KernelWiki/requirements.txt
 ```
 
-That's it. The skill auto-registers (because `SKILL.md` lives at the clone root), and the query scripts auto-resolve the wiki root to their own directory — no environment variable required.
+Claude Code auto-registers any directory under `~/.claude/skills/` that contains a root `SKILL.md`.
 
-Smoke test:
+### Grok Build
 
 ```bash
+git clone https://github.com/yiweny/KernelWiki.git ~/.grok/skills/KernelWiki
+pip install -r ~/.grok/skills/KernelWiki/requirements.txt
+```
+
+Grok Build discovers skills from (highest priority first):
+
+| Location | Scope |
+|---|---|
+| `./.grok/skills/` | Local (CWD) |
+| `<repo_root>/.grok/skills/` | Repo-shared |
+| `~/.grok/skills/` | User (all projects) |
+| `~/.claude/skills/` | User (Claude Code compatibility) |
+
+So a Claude Code install under `~/.claude/skills/KernelWiki` is also visible to Grok Build. Prefer `~/.grok/skills/` when you only use Grok, or want Grok-local overrides.
+
+#### Repo-scoped install (optional, Grok Build)
+
+Share the skill with everyone working in a single repo:
+
+```bash
+# from the project you want KernelWiki available in
+mkdir -p .grok/skills
+git clone https://github.com/yiweny/KernelWiki.git .grok/skills/KernelWiki
+pip install -r .grok/skills/KernelWiki/requirements.txt
+```
+
+### Install both agents at once
+
+```bash
+git clone https://github.com/yiweny/KernelWiki.git /tmp/KernelWiki
+pip install -r /tmp/KernelWiki/requirements.txt
+
+# Claude Code
+mkdir -p ~/.claude/skills
+cp -a /tmp/KernelWiki ~/.claude/skills/KernelWiki
+
+# Grok Build
+mkdir -p ~/.grok/skills
+cp -a /tmp/KernelWiki ~/.grok/skills/KernelWiki
+```
+
+Or use one clone and symlink the other path:
+
+```bash
+git clone https://github.com/yiweny/KernelWiki.git ~/.claude/skills/KernelWiki
+pip install -r ~/.claude/skills/KernelWiki/requirements.txt
+mkdir -p ~/.grok/skills
+ln -s ~/.claude/skills/KernelWiki ~/.grok/skills/KernelWiki
+```
+
+### Smoke test
+
+```bash
+# Claude Code path
 cd ~/.claude/skills/KernelWiki
+# or Grok Build path:
+# cd ~/.grok/skills/KernelWiki
+
 python3 scripts/query.py --tag nvfp4 --type kernel --compact
+python3 scripts/query.py --architecture GB300 --compact
+python3 scripts/get_page.py hw-sm103-blackwell-ultra --frontmatter-only
 python3 scripts/get_page.py kernel-flash-attention-4 --frontmatter-only
 ```
 
-Optional override for relocating the scripts:
+Optional override if you relocate the scripts outside the skill root:
 
 ```bash
 export BLACKWELL_WIKI_ROOT=/path/to/KernelWiki
 ```
 
+### Update an existing install
+
+```bash
+# Claude Code
+git -C ~/.claude/skills/KernelWiki pull
+
+# Grok Build
+git -C ~/.grok/skills/KernelWiki pull
+```
 ## What's Here
 
 - Source PR pages, synthesized wiki pages, blog/doc/contest summaries, candidate ledgers, query indices, and artifact bundles.
@@ -124,7 +198,7 @@ python3 scripts/generate-indices.py    # regenerate query indices
 
 ## Scope Rules
 
-- **Blackwell-first** — SM100 content is primary. SM90 requires explicit `blackwell_relevance` field.
+- **Blackwell-first** — SM100/SM103 content is primary. SM90 requires explicit `blackwell_relevance` field.
 - **Kernel-only** — No distributed-system topics (DeepEP, DualPipe, EPLB are out of scope).
 - **English canonical** — All content in English.
 - **First-class DSLs** — CuTe DSL, CUDA C++, PTX, Triton. TileLang / cuTile / JAX-Pallas mentioned but no dedicated guides.
@@ -132,8 +206,9 @@ python3 scripts/generate-indices.py    # regenerate query indices
 ## Repository Layout
 
 ```
-KernelWiki/                             (= ~/.claude/skills/KernelWiki/)
-├── SKILL.md                           # Skill entry point
+KernelWiki/                             (= ~/.claude/skills/KernelWiki/
+│                                        or ~/.grok/skills/KernelWiki/)
+├── SKILL.md                           # Skill entry point (Claude Code + Grok Build)
 ├── README.md                          # This file
 ├── CLAUDE.md                          # Extended navigation + schema reference
 ├── index.md                           # Curated top-level index
@@ -173,12 +248,12 @@ KernelWiki/                             (= ~/.claude/skills/KernelWiki/)
 │   └── blogs/
 │
 ├── wiki/                              # Layer 2: synthesized knowledge
-│   ├── hardware/
+│   ├── hardware/                      # includes sm103-blackwell-ultra.md
 │   ├── techniques/
 │   ├── kernels/
 │   ├── patterns/
 │   ├── languages/
-│   └── migration/
+│   └── migration/                     # includes sm100-to-sm103.md
 │
 └── queries/                           # Layer 3: auto-generated indices
     ├── by-problem.md
@@ -188,7 +263,6 @@ KernelWiki/                             (= ~/.claude/skills/KernelWiki/)
     ├── by-kernel-type.md
     └── by-language.md
 ```
-
 ## License
 
 Summaries and wiki syntheses in this repository are derivative works citing upstream PRs, blogs, and docs. The tooling (`scripts/`, `references/`, `data/`) is MIT-style; see individual files for any exceptions.
